@@ -1,0 +1,143 @@
+{$header}
+<div id="user_register">
+	 <form id="register">
+		<div id="d_notice">
+			提示:如果你已经注册会员,请直接 &nbsp;<a href="__APP__/user/login" target="_blank">登录</a>
+		</div>
+		<div id="d_username">
+			<div><font color="red">*</font>常用邮件地址:<input type="text" id="username" value="" onblur="check(this,0);"/> &nbsp <font>请输入您常用的电子邮箱,将用于登录、接受语音通知等.</font></div>
+			<div id="d_username_result"></div>
+		</div>
+		<div id="d_realname">
+			 <div><font color="red">*</font>常用姓名;<input type="text" id="realname" value="" onblur="check(this,1);"/> <font>不少于2个字符,可以是汉字或拼音.</font></div>
+			 <div id="d_realname_result"></div>
+		</div>
+		<div id="d_userpass">
+			<div> <font color="red">*</font>设置密码:<input type="password" id="userpass" onblur="check(this,2);"/><font>5-12字符,可以由数字、英文、符号组成</font></div>
+			 <div id="d_userpass_result"></div>
+		</div>
+		<div id="d_confirmuserpass">
+			<div> <font color="red">*</font>确认密码:<input type="password" id="confirmuserpass" onblur="check(this,3);"/><font>再输入一次密码.</font></div>
+			 <div id="d_confirmuserpass_result"></div>
+		</div>
+		<div id="d_verifycode">
+			<div> 
+				<font color="red">*</font>验证码:<input type="text"  id="verifycode"/>
+				<img id="verifyimg" src="__APP__/api/verifycode.html?rand={:time()}" title="点击刷新" alt="点击刷新" onclick="flushVerify();"/>
+				<a onclick="flushVerify();" href="javascript:void(0);">看不清?点击换一张图.</a>
+			</div>
+			</div>
+			 <div id="d_verifycode_result"></div>
+		</div>
+		<div id="d_aggrement">
+			<input type="button" value="同意我们的协议并注册" id="registerbtn"/>
+			<font>点击上面的"同意我们的协议并注册",即表示您同意接受我们的</font>
+			<a href="__APP__/help/aggrement"></a>
+		</div>
+		
+	 </form>
+</div>
+<script>
+function flushVerify(){ 
+	var time = new Date().getTime();
+     $("#verifyimg").attr('src',"__APP__/api/verifycode.html?rand="+Math.random());
+}
+
+var url = '/manage';
+var flag = true;//格式匹配标记
+var temp = true;//临时标记
+var mailflag = true;//邮箱唯一验证
+var info = "";
+var checkitem = new Array("username","realname","userpass","confirmuserpass","verifycode");
+var checkPattern = new Array("/^[a-z A-Z 0-9]+@[a-z A-Z 0-9]+(\.\w+)+$/","/^(\w+)|([\u0391-\uFFE5]+)$/","/^[a-zA-Z]\d[_]$/","/^[a-zA-Z]\d[_]$/","\d+");
+var checkInfo = new Array("邮箱格式不匹配","常用姓名格式不匹配","密码格式不匹配","确认密码格式不匹配","验证码格式不匹配");
+function check(t,j){ 
+	var tempvalue = $(t).val();
+	var tempid = $(t).attr("id");
+	//var pattern = new RegExp(checkPattern[j]);
+	var pattern = "";
+	var info = checkInfo[j];
+	if(tempvalue == "undefined"){ 
+		return false
+	}
+	if(tempid == "username"){
+		//邮箱还要验证唯一和邮箱格式
+		$.ajax({
+		   type: "POST",
+		   url: url+'/user/checkemail',
+		   data: "username="+encodeURIComponent(tempvalue),
+		   success: function(msg){
+			  if(msg.state == "1"){
+				$("#d_username_result").html("邮箱不可为空");
+				$("#username").focus();
+				mailflag = false;
+			  }else if(msg.state == "2"){
+				$("#d_username_result").html("邮箱已使用");
+				$("#username").focus();
+				mailflag = false;
+			  }else if(msg.state == "3"){ 
+				mailflag = true;
+				$("#d_username_result").html("恭喜您,此邮箱可用!"); 
+			  }
+		   }
+		}); 
+		pattern = /^[\-\.\w]+@[\.\-\w]+(\.\w+)+$/;
+	}else if(tempid == "realname"){ 
+		 pattern = /^(\w+)|([\u0391-\uFFE5]+)$/;
+	}else if(tempid == "userpass"){ 
+		 pattern =/^[a-zA-Z0-9]+$/;
+	}else if(tempid == "confirmuserpass"){ 
+		 pattern = /^[a-zA-Z0-9]+$/;
+	}
+	if(!(pattern.test(tempvalue))){
+		temp = false;
+		$("#d_"+tempid+"_result").html('<font>'+info+'</font>');
+	}else {
+		temp = true;
+	}
+	flag = flag && temp;
+}
+
+$(function(){
+	//flushVerify();
+	$("#registerbtn").click(function(){
+		var username = $("#username").val();
+		var realname = $("#realname").val();
+		var userpass = $("#userpass").val();
+		var confirmuserpass = $("#confirmuserpass").val();
+	    var verifycode = $('#verifycode').val();
+		if(username == ''){
+			$("#username").focus();
+			return false;
+		}
+		if(userpass == ''){
+			$("#userpass").focus();
+			return false;
+		}
+		if(userpass != confirmuserpass){
+			$("#confirmuserpass").focus();
+			return false;
+		}
+		//输入信息格式符合且邮箱可用 
+		if(flag == true && mailflag == true){
+			$.ajax({
+				type: "POST",
+				url: url+'/user/register',
+				data: "username="+encodeURIComponent(username)+"&userpass="+encodeURIComponent(userpass)+"&confirmuserpass="+encodeURIComponent(confirmuserpass)+"&realname="+encodeURIComponent(realname)+"&verifycode="+encodeURIComponent(verifycode),
+				success: function(msg){
+					if(msg.state >=1){
+						alert("成功注册!");
+					window.location= url+'/index';
+					}else{
+						alert("注册失败!");
+					}
+				}
+			}); 
+		}else{ 
+			return false;
+		}
+	
+	});
+})
+</script>
+{$footer}

@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link type="text/css" rel="stylesheet" href="__PUBLIC__/css/manage.css" />
+<script type="text/javascript" src="__PUBLIC__/js/jquery.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/manage.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/iepng.js"></script>
+<title>后台管理</title>
+<script>
+
+var words = '';
+var category = '';
+var carrier = '';
+var carr_type = '';
+var carr_site = '';
+var order = 1;
+var timeslot = '';
+var neg = '';
+var p = 1;
+var offset = 20;
+var page = '';
+var cap = '';
+var menu_id = {$mid};
+var similarlog = 0;
+var pid = {$pid};
+$(function(){
+  $("#index_left,#index_main").css('height',($(window).height()-160));
+  $(window).resize(function(){
+    $("#index_left,#index_main").css('height',($(window).height()-160));
+  });
+  menu(menu_id);
+});
+</script>
+</head>
+
+<body style="overflow:hidden;">
+<table cellpadding="0" cellspacing="0" class="header"><tr>
+  <td class="info">
+    <img src="__PUBLIC__/img/logo.png" style="padding:10px 0 10px 2px;" /><br />
+    <div class="user_info">
+      {$user.username}，您好！<br />
+      <a href="__APP__/User/login/out">退出登录</a>  <a href="" class="ml_20">帮助</a>
+    </div>
+  </td>
+  <td width="10"></td>
+  <td valign="bottom">
+    <div class="menu">
+		<ul>
+		<if condition="$level eq 1">
+			<li class="bg_image" rel="Category"><a href="__APP__/?mid=2"><span class="icon_1">分类管理</span></a></li>
+			<li class="bg_image" rel="Rentcar"><a href="__APP__/?mid=3"><span class="icon_1">租车管理</span></a></li>
+			<li class="bg_image" rel="Hotel"><a href="__APP__/?mid=4"><span class="icon_2">行程酒店</span></a></li>
+			<li class="bg_image" rel="Bbs"><a href="__APP__/?mid=5"><span class="icon_6">结伴同游</span></a></li>
+			<li class="bg_image" rel="Product"><a href="__APP__/?mid=6"><span class="icon_6">行程管理</span></a></li>
+		<else />
+			<li class="bg_image" rel="User" <if condition="$level eq 1"> pel="1" </if> ><a href="__APP__/?mid=1"><span class="icon_1">用户管理</span></a></li>
+			<li class="bg_image" rel="Category"><a href="__APP__/?mid=2"><span class="icon_1">分类管理</span></a></li>
+			<li class="bg_image" rel="Rentcar"><a href="__APP__/?mid=3"><span class="icon_1">租车管理</span></a></li>
+			<li class="bg_image" rel="Hotel"><a href="__APP__/?mid=4"><span class="icon_2">行程酒店</span></a></li>
+			<li class="bg_image" rel="Bbs"><a href="__APP__/?mid=5"><span class="icon_6">结伴同游</span></a></li>
+			<li class="bg_image" rel="Product"><a href="__APP__/?mid=5"><span class="icon_6">行程管理</span></a></li>
+			<if condition="$level eq 1">
+				<li class="bg_image" rel="Showlaylogs"><a href="__APP__/?mid=5"><span class="icon_3">系统日志</span></a></li> 
+			</if>
+		</if>
+		</ul>
+	</div>
+    <div class="sub_info">
+      <div class="statistics">当前时间：{$time|date="Y年m月d日",###} &nbsp;
+ 
+      </div>
+      <div class="r search_bg mr_10" id='noneSe'>
+        <input type="text" class="l search_input" />
+        <a  class="r search_icon"  onclick="get_search();" href="javascript:void(0);"></a>
+      </div>
+    </div>
+  </td>
+</tr></table>
+<table cellpadding="0" cellspacing="0" class="w_percent">
+  <tr><td colspan="3" height="10"></td></tr>
+  <tr>
+    <td class="left" valign="top"  id="frame_left">
+      <iframe style="width:100%;"  frameborder="no" scrolling="auto" src="__APP__/User/left.html" id="index_left"></iframe>
+    </td>
+    <td width="10" valign="top" id='hidden' align="center" onclick="show_frame_left(this)" style="padding-top:180px;"><img style="cursor:pointer;" src="__PUBLIC__/img/switch_left.gif" /></td>
+    <td valign="top">
+      <iframe style="width:100%;" frameborder="no" scrolling="auto" src="__APP__/User/main.html" id="index_main" name="main"></iframe>
+    </td>
+  </tr>
+</table>
+<!--[if IE 6]> 
+<script src="__PUBLIC__/js/iepng.js" type="text/javascript"></script>
+<script type="text/javascript">
+EvPNG.fix('div,a,img,span');
+</script>
+<![endif]-->
+<script>
+if(menu_id == 2){
+	$('#noneSe').hide();
+}
+</script>
+</body>
+</html>

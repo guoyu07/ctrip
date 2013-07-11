@@ -1,0 +1,9 @@
+#####2013-07-02####
+
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'boy'@'192.168.1.%' IDENTIFIED BY 'boy';
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> flush privileges;
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> 

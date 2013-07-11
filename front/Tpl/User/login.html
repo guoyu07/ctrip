@@ -1,0 +1,59 @@
+{$header}
+<div id="user_center">
+	 <form id="login">
+	 	<div id="d_username">
+	 			用户名:<input type="text" id="username" value=""/>
+	 	</div>
+		<div id="d_userpass">
+				密码;<input type="password" id="userpass" value=""/>
+		</div>
+		<div id="d_verifycode"> 
+			<font color="red">*</font>验证码:<input type="text"  id="verifycode" onblur="check(this,4);"/>
+				<img id="verifyimg" src="__APP__/api/verifycode.html?rand={:time()}" title="点击刷新" alt="点击刷新" onclick="flushVerify();"/>
+				<a onclick="flushVerify();" href="javascript:void(0);">看不清?点击换一张图.</a>
+			</div>
+			 <div id="d_verifycode_result"></div>
+		 <input type="button" value="登录" id="loginbtn"/>
+	 </form>
+</div>
+<script>
+function flushVerify(){ 
+	var time = new Date().getTime();
+     $("#verifyimg").attr('src',"__APP__/api/verifycode.html?rand="+Math.random());
+}
+$(function(){
+	flushVerify();
+	var url = '/front';
+	$("#loginbtn").click(function(){
+		var username = $("#username").val();
+		var userpass = $("#userpass").val();
+		var verifycode = $('#verifycode').val();
+		if(username == ''){
+			$("#username").focus();
+			return false;
+		}
+		if(userpass == ''){
+			$("#userpass").focus();
+			return false;
+		}
+		if(verifycode == ''){
+			$("#verifycode").focus();
+			return false;
+		}
+		$.ajax({
+		   type: "POST",
+		   url: url+'/user/login',
+		   data: "username="+encodeURIComponent(username)+"&userpass="+encodeURIComponent(userpass)+"&verifycode="+encodeURIComponent(verifycode),
+		   success: function(msg){
+			  if(msg.state == 1){
+				 alert("登录成功!");
+				 window.location= url+'/index';
+			  }else{
+				  alert("用户名或密码不正确!");
+			  }
+		   }
+		}); 
+	});
+})
+</script>
+{$footer}
