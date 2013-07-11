@@ -6,9 +6,9 @@ $config =  array(
         'DB_TYPE' => "mysql",
         'DB_HOST' => '127.0.0.1',
         'DB_PORT' => '3306',
-        'DB_NAME' => 'myctrip',
-        'DB_USER' => 'boy',
-        'DB_PWD' => 'boy',
+        'DB_NAME' => 'mytest',
+        'DB_USER' => 'test',
+        'DB_PWD' => 'test',
         'DB_PREFIX' => '',
         
         'URL_MODEL' => 2,
@@ -21,8 +21,7 @@ $config =  array(
         'SHOW_ERROR_MSG' =>false
 );
 //extends config
-$config["TRIP_DB_PREFIX"] = "ctrip_";
-$config["TRIP_SITEURL"] = "www.myctrip.com";
-$config["TRIP_SITENAME"] = "ÂÃÐÐÍø";
+$config["TRIP_DB_PREFIX"] = "mytest_";
+$config["TRIP_SITEURL"] = "www.test.com";
+$config["TRIP_SITENAME"] = "test";
 return $config;
-;
